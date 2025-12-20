@@ -1,7 +1,4 @@
 {
-  "trackedWallets": [
-    "0xc9f9a7610efa67b8614c3152f50af2bd9db6c5e8"
-  ],
   "copyStrategy": "scaled",
   "scaleFactor": 0.5,
   "riskLimits": {

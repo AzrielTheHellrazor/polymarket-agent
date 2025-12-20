@@ -39,7 +39,6 @@ export interface TradeDetectionConfig {
 }
 
 export interface CopyTradingConfig {
-  trackedWallets: string[]; // Wallet addresses to track
   copyStrategy: CopyStrategy;
   scaleFactor?: number; // For scaled copy (e.g., 0.5 = 50%)
   percentageOfBalance?: number; // For percentage copy (e.g., 0.1 = 10%)
@@ -63,19 +62,7 @@ export interface ValidationResult {
 export function validateConfig(config: Partial<CopyTradingConfig>): ValidationResult {
   const errors: string[] = [];
 
-  // Required fields
-  if (!config.trackedWallets || !Array.isArray(config.trackedWallets)) {
-    errors.push('trackedWallets must be an array');
-  } else if (config.trackedWallets.length === 0) {
-    errors.push('trackedWallets must contain at least one wallet address');
-  } else {
-    // Validate wallet addresses
-    config.trackedWallets.forEach((wallet, index) => {
-      if (typeof wallet !== 'string' || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
-        errors.push(`trackedWallets[${index}] must be a valid Ethereum address`);
-      }
-    });
-  }
+  // Note: trackedWallets is now loaded from trackedWallets.json file, not from config.json
 
   if (!config.copyStrategy) {
     errors.push('copyStrategy is required');
@@ -252,7 +239,6 @@ function mergeWithEnv(config: Partial<CopyTradingConfig>): Partial<CopyTradingCo
  */
 export function getDefaultConfig(): CopyTradingConfig {
   return {
-    trackedWallets: [],
     copyStrategy: 'exact',
     riskLimits: {
       maxPositionSize: 1000,

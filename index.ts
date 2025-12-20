@@ -2,7 +2,7 @@
 // Polymarket Copy Trading Bot - Main Entry Point
 // ============================================================================
 
-import { loadConfig, validateConfig, toEngineConfig, getWalletConfig } from './types/config';
+import { loadConfig, validateConfig, toEngineConfig } from './types/config';
 import WalletMonitor from './copyTrading/walletMonitor';
 import { CopyTradingEngine } from './copyTrading/copyTradingEngine';
 import { createOrderService } from './clob/orderService';
@@ -63,12 +63,24 @@ async function main() {
     walletMonitor.setDetectionMethod(config.tradeDetection.method);
     console.log(`   Detection method: ${config.tradeDetection.method}`);
     
-    // Add tracked wallets
-    console.log(`   Adding ${config.trackedWallets.length} tracked wallet(s)...`);
-    for (const wallet of config.trackedWallets) {
-      const walletConfig = getWalletConfig(config, wallet);
-      walletMonitor.addWallet(wallet, walletConfig);
-      console.log(`   ✓ ${wallet}`);
+    // Load tracked wallets from trackedWallets.json
+    console.log('   Loading tracked wallets from trackedWallets.json...');
+    try {
+      await walletMonitor.loadWalletsFromFile('trackedWallets.json');
+      const trackedWallets = walletMonitor.getTrackedWallets();
+      if (trackedWallets.length === 0) {
+        console.warn('⚠️  No wallets found in trackedWallets.json');
+        console.warn('   Add wallet addresses to trackedWallets.json to start monitoring');
+      } else {
+        console.log(`   ✓ Loaded ${trackedWallets.length} wallet(s) from trackedWallets.json`);
+        trackedWallets.forEach(wallet => {
+          console.log(`   ✓ ${wallet}`);
+        });
+      }
+    } catch (error) {
+      console.error('❌ Failed to load tracked wallets:', error);
+      console.error('   Make sure trackedWallets.json exists and has valid format: { "wallets": ["0x..."] }');
+      process.exit(1);
     }
     console.log('✅ Wallet Monitor initialized\n');
 

@@ -70,7 +70,6 @@ Edit `config.json` with your settings:
 
 ```json
 {
-  "trackedWallets": ["0x..."],
   "copyStrategy": "scaled",
   "scaleFactor": 0.01,
   "riskLimits": {
@@ -82,6 +81,16 @@ Edit `config.json` with your settings:
     "method": "on-chain",
     "enabled": true
   }
+}
+```
+
+5. Add wallets to track:
+
+Edit `trackedWallets.json` and add wallet addresses:
+
+```json
+{
+  "wallets": ["0x...", "0x..."]
 }
 ```
 

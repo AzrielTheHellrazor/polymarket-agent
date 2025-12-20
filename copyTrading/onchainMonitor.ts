@@ -148,7 +148,6 @@ export class OnChainMonitor {
             console.warn(`Invalid wallet address: ${wallet}`);
           }
         });
-        console.log(`Loaded ${this.trackedWallets.size} tracked wallet(s)`);
       } else {
         throw new Error('Invalid trackedWallets.json format. Expected { "wallets": [...] }');
       }

@@ -104,8 +104,6 @@ export class WalletMonitor {
         this.trackedWallets.set(address.toLowerCase(), { enabled: true });
       }
     });
-
-    console.log(`Loaded ${loadedWallets.length} wallet(s) from ${filePath}`);
   }
 
   /**
