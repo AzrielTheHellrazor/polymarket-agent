@@ -24,7 +24,7 @@ An automated copy trading bot for Polymarket that monitors specific wallets and 
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/AzrielTheHellrazor/polymarket-agent.git
 cd polymarket-agent
 ```
 
