@@ -1,0 +1,16 @@
+{
+  "name": "polymarket-agent",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@polymarket/clob-client": "^5.1.1",
+    "ethers": "^6.16.0"
+  }
+}

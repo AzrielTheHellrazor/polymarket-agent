@@ -1,0 +1,23 @@
+{
+  "trackedWallets": [
+    "0xc9f9a7610efa67b8614c3152f50af2bd9db6c5e8"
+  ],
+  "copyStrategy": "scaled",
+  "scaleFactor": 0.5,
+  "riskLimits": {
+    "maxPositionSize": 1000,
+    "maxOrderValue": 500,
+    "maxDailyLoss": 100,
+    "maxSlippage": 0.02
+  },
+  "filters": {
+    "whitelistMarkets": [],
+    "blacklistMarkets": [],
+    "minMarketLiquidity": 1000
+  },
+  "tradeDetection": {
+    "method": "on-chain",
+    "enabled": true
+  }
+}
+
