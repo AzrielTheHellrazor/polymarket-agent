@@ -49,16 +49,28 @@ cp .env.example .env
 Edit `.env` and add your credentials:
 
 ```env
-# Required
+# Required - Normal API credentials (for order placement)
 RPC_URL=https://polygon-rpc.com
 PRIVATE_KEY=0x...
-POLYMARKET_API_KEY=your_api_key
-POLYMARKET_SECRET_KEY=your_secret_key
-POLYMARKET_PASSPHRASE=your_passphrase
+POLYMARKET_API_KEY=your_normal_api_key
+POLYMARKET_SECRET_KEY=your_normal_secret_key
+POLYMARKET_PASSPHRASE=your_normal_passphrase
 
 # Optional
 FUNDER_ADDRESS=0x...  # Your Polymarket smart contract wallet address
+
+# Optional - Builder API credentials (only for order attribution)
+# These are separate from normal API credentials and only used for Builder Program attribution
+POLY_BUILDER_API_KEY=your_builder_api_key
+POLY_BUILDER_SECRET=your_builder_secret
+POLY_BUILDER_PASSPHRASE=your_builder_passphrase
 ```
+
+**Important Notes:**
+- **Normal API Key** (POLYMARKET_API_KEY) is **REQUIRED** for order placement. This is different from Builder API key.
+- **Builder API Key** (POLY_BUILDER_API_KEY) is **OPTIONAL** and only used for order attribution in the Builder Program.
+- Do NOT use Builder API key as your normal API key - they serve different purposes.
+- You can create normal API keys in Polymarket API Settings (not Builder Profile).
 
 4. Configure the bot:
 
@@ -200,13 +212,18 @@ This configuration will:
 
 - `RPC_URL`: Polygon RPC endpoint URL
 - `PRIVATE_KEY`: Your wallet private key
-- `POLYMARKET_API_KEY`: Polymarket API key
-- `POLYMARKET_SECRET_KEY`: Polymarket API secret
-- `POLYMARKET_PASSPHRASE`: Polymarket API passphrase
+- `POLYMARKET_API_KEY`: Normal Polymarket API key (for order placement)
+- `POLYMARKET_SECRET_KEY`: Normal Polymarket API secret (for order placement)
+- `POLYMARKET_PASSPHRASE`: Normal Polymarket API passphrase (for order placement)
 
 ### Optional
 
 - `FUNDER_ADDRESS`: Your Polymarket smart contract wallet address (found on your Polymarket profile)
+- `POLY_BUILDER_API_KEY`: Builder API key (only for order attribution, separate from normal API key)
+- `POLY_BUILDER_SECRET`: Builder API secret (only for order attribution)
+- `POLY_BUILDER_PASSPHRASE`: Builder API passphrase (only for order attribution)
+
+**Note:** Builder API credentials are completely separate from normal API credentials. Builder API keys are only used for tracking orders in the Builder Program leaderboard, while normal API keys are required for actual order placement. See [Polymarket Builder Order Attribution](https://docs.polymarket.com/developers/builders/order-attribution) for more details.
 
 ## API Documentation
 
