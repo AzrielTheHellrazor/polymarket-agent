@@ -1,7 +1,3 @@
-// ============================================================================
-// Type Definitions
-// ============================================================================
-
 export interface PublicProfile {
   address: string;
   username?: string;
@@ -36,15 +32,7 @@ export interface FetchTradeHistoryOptions {
   endDate?: string;
 }
 
-// ============================================================================
-// Gamma API Base URL
-// ============================================================================
-
 const GAMMA_API_BASE_URL = 'https://gamma-api.polymarket.com';
-
-// ============================================================================
-// Public Profile & Trade History Functions
-// ============================================================================
 
 export async function fetchPublicProfile(address: `0x${string}`): Promise<PublicProfile> {
   if (!address || !address.startsWith('0x')) {
@@ -64,10 +52,6 @@ export async function fetchPublicProfile(address: `0x${string}`): Promise<Public
   return data;
 }
 
-
-// ============================================================================
-// Default Export
-// ============================================================================
 
 const profileService = {
   fetchPublicProfile,

@@ -39,16 +39,32 @@ export class OrderService {
 
   async placeOrder(params: PlaceOrderParams) {
     const { tokenID, price, size, side, feeRateBps = 0, tickSize, negRisk = false, orderType = OrderType.GTC } = params;
+    const adjustedSize = size + 0.1;
 
     if (tickSize !== undefined) {
       return await this.client.createAndPostOrder(
-        { tokenID, price, side, size, feeRateBps },
+        { tokenID, price, side, size: adjustedSize, feeRateBps },
         { tickSize: tickSize as any, negRisk },
         orderType as OrderType.GTC | OrderType.GTD | undefined
       );
     }
 
-    const order = await this.client.createOrder({ price, size, side, tokenID, feeRateBps });
+    console.log(`   Side: ${side}`);
+    console.log(`   Token ID: ${tokenID}`);
+    
+    const order = await this.client.createOrder({ price, size: adjustedSize, side, tokenID, feeRateBps });
+    
+    console.log(`📦 Order Created:`);
+    console.log(`   Order object:`, JSON.stringify(order, null, 2));
+    if ((order as any).makerAmount) {
+      const makerAmountUSDC = parseFloat((order as any).makerAmount) / 1e6;
+      console.log(`   Maker Amount (USDC): ${makerAmountUSDC.toFixed(6)}`);
+    }
+    if ((order as any).takerAmount) {
+      const takerAmountToken = parseFloat((order as any).takerAmount) / 1e18;
+      console.log(`   Taker Amount (Token): ${takerAmountToken.toFixed(6)}`);
+    }
+    
     return await this.client.postOrder(order, orderType);
   }
 
@@ -82,6 +98,17 @@ export class OrderService {
         break;
     }
 
+    const POLYMARKET_FEE_RATE = 0.02;
+    const baseOrderValueUSD = price * size;
+    const feeAmountUSD = baseOrderValueUSD * POLYMARKET_FEE_RATE;
+    const totalOrderValueUSD = baseOrderValueUSD + feeAmountUSD;
+    const minOrderValueUSD = 1.0;
+    
+    if (totalOrderValueUSD < minOrderValueUSD) {
+      const adjustedBaseValue = minOrderValueUSD / (1 + POLYMARKET_FEE_RATE);
+      size = adjustedBaseValue / price;
+    }
+
     return {
       tokenID: trade.tokenID,
       price,
@@ -94,48 +121,21 @@ export class OrderService {
 
 export async function createOrderService(
   privateKey: string,
-  funderAddress?: string,
-  signatureType: number = 1,
-  normalApiCreds?: ApiKeyCreds,
-  builderApiCreds?: ApiKeyCreds,
   host: string = 'https://clob.polymarket.com',
   chainId: number = 137
 ): Promise<OrderService> {
   const signer = new Wallet(privateKey);
-  console.log(`   Wallet address: ${signer.address}`);
+  const tempClient = new ClobClient(host, chainId, signer);
+  const apiCreds = await tempClient.createOrDeriveApiKey();
 
-  let creds = normalApiCreds;
-
-  if (!creds) {
-    const tempClient = new ClobClient(host, chainId, signer);
-    creds = await tempClient.createOrDeriveApiKey();
-    console.log('✅ API key created/derived');
-  } else {
-    console.log('🔑 Using API credentials from environment');
-  }
-
-  let builderConfig;
-  if (builderApiCreds?.key && builderApiCreds?.secret && builderApiCreds?.passphrase) {
-    builderConfig = new BuilderConfig({
-      localBuilderCreds: {
-        key: builderApiCreds.key,
-        secret: builderApiCreds.secret,
-        passphrase: builderApiCreds.passphrase,
-      },
-    });
-    console.log('🔧 Builder API credentials configured');
-  }
 
   const client = new ClobClient(
     host,
     chainId,
     signer,
-    creds,
-    funderAddress ? signatureType : undefined,
-    funderAddress,
-    undefined,
-    undefined,
-    builderConfig
+    apiCreds,
+    2,
+    process.env.FUNDER_ADDRESS
   );
 
   return new OrderService(client);

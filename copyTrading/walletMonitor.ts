@@ -94,7 +94,6 @@ export class WalletMonitor {
       throw new Error('Cannot change detection method while monitoring is active. Stop monitoring first.');
     }
     this.detectionMethod = method;
-    console.log(`Detection method set to: ${method}`);
   }
 
   getDetectionMethod(): DetectionMethod {

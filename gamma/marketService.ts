@@ -30,7 +30,7 @@ export async function fetchMarkets(options?: FetchMarketsOptions): Promise<Marke
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
   }
-  return response.json() as Market[];
+  return (await response.json()) as Market[];
 }
 
 export default { fetchMarkets };

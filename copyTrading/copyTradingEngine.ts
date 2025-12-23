@@ -27,7 +27,6 @@ export interface CopyTradingConfig {
   filters?: MarketFilters;
 }
 
-const USDC_CONTRACT = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 const USDC_DECIMALS = 6;
 const USDC_ABI = [{ constant: true, inputs: [{ name: '_owner', type: 'address' }], name: 'balanceOf', outputs: [{ name: 'balance', type: 'uint256' }], type: 'function' }] as const;
 
@@ -51,7 +50,7 @@ export class CopyTradingEngine {
     if (rpcUrl || process.env.RPC_URL) {
       this.provider = new ethers.JsonRpcProvider(rpcUrl || process.env.RPC_URL!);
       if (this.provider && this.userWalletAddress) {
-        this.usdcContract = new ethers.Contract(USDC_CONTRACT, USDC_ABI, this.provider);
+        this.usdcContract = new ethers.Contract('0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', USDC_ABI, this.provider);
       }
     }
   }
